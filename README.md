@@ -1,8 +1,8 @@
-# ⚡ PagePulse - Production-Grade Website Auditing Platform
+# 🔍 PagePulse - Commercial Web Auditing & SEO Inspector SaaS Platform
 
 <div align="center">
 
-![PagePulse SaaS Banner](https://raw.githubusercontent.com/digitalheroesco/pagepulse/main/assets/banner.png)
+![PagePulse SaaS Banner](docs/images/home.svg)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-2563eb?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -11,7 +11,7 @@
 [![Express](https://img.shields.io/badge/Express-4.19-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-6%20Passed-10b981?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 
-**Instant website health, response latency, structural SEO, accessibility, and content density inspection.**
+**Instant 0–100 Website Health Scoring, Response Latency, SEO Metadata, Accessibility & Content Depth Engine.**
 
 [Live Demo](#-deployment-guide) • [API Documentation](#-api-contract) • [Architecture](#-architecture) • [Getting Started](#-getting-started)
 
@@ -21,27 +21,25 @@
 
 ## 📖 Overview
 
-**PagePulse** is a commercial-grade website auditing SaaS application built to inspect any webpage in real time. Designed with a clean aesthetic matching top-tier tech products like Stripe, Vercel, Linear, and Supabase, PagePulse extracts structural health metrics into an interactive 2-column dashboard.
+**PagePulse** is a production-grade website auditing and SEO inspection SaaS platform designed to analyze any public webpage in real time. It combines TTFB server latency measurement, HTML tag optimization, heading hierarchy, image alt accessibility, and text word density into a single interactive 2-column SaaS dashboard.
+
+Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Supabase.
 
 ---
 
-## 📸 Screenshots & Demo
+## 📸 Interface Screenshots & Demo
 
-```
-+-----------------------------------------------------------------------------------+
-|  [Logo] PagePulse Pro         Features   API   Docs   GitHub     [Analyze Webpage]|
-|-----------------------------------------------------------------------------------|
-|                                                                                   |
-|                   Analyze any website in seconds                                  |
-|         Instantly inspect response time, metadata and page structure              |
-|                                                                                   |
-|         [ https://example.com                       ] [ Analyze -> ]              |
-|                                                                                   |
-|-----------------------------------------------------------------------------------|
-|  [200 OK Status]    [142ms Response Time]    [Title Length Check]   [Meta Description]|
-|  [H1 Tag Count]     [Missing Alt Images]     [Visible Word Count]   [Content Depth]   |
-+-----------------------------------------------------------------------------------+
-```
+### 1. Interactive Health Score Dashboard
+![Results View](docs/images/results.svg)
+
+### 2. Multi-Stage Animated Audit Engine
+![Audit View](docs/images/audit.svg)
+
+### 3. Developer REST API Docs
+![API View](docs/images/api.svg)
+
+### 4. Non-HTML Error Resilience
+![Errors View](docs/images/errors.svg)
 
 *(Demo GIF Placeholder: `assets/demo.gif`)*
 
@@ -49,10 +47,12 @@
 
 ## ✨ Features
 
-- ⚡ **Response Time & Speed Benchmarks**: Tracks HTTP response latency and categorizes server speed (`<200ms` Fast, `200-500ms` Moderate, `>500ms` Slow).
-- 🏷️ **SEO Title & Meta Description Audit**: Evaluates document `<title>` character lengths against 50–60 character targets and inspects meta descriptions.
+- 🏆 **0–100 Overall Website Health Score**: Computes an aggregate health index (Grades `A+`, `A`, `B`, `C`, `F`) across status, latency, SEO tags, headings, and image alt text.
+- 💡 **Smart Actionable Recommendations**: Dynamically generates optimization hints for missing meta tags, suboptimal titles, heading hierarchy gaps, missing alt text, slow latency, or low word count.
+- ⚡ **Response Time & Speed Benchmarks**: Tracks HTTP document response latency and classifies server performance (`<200ms` Fast, `200-500ms` Moderate, `>500ms` Slow).
+- 🏷️ **SEO Title & Meta Description Audit**: Evaluates `<title>` tag lengths against 50–60 character targets and inspects meta description presence.
 - 📐 **Heading Hierarchy Inspection**: Counts `<h1>` elements to flag missing headings or multiple H1 tags for search indexers.
-- ♿ **Image Accessibility Coverage**: Scans body images to detect missing `alt` attributes and provides an expandable image source inspector.
+- ♿ **Image Alt Accessibility Coverage**: Scans body images to detect missing `alt` attributes and provides an expandable image source inspector.
 - 📚 **Word Density & Content Depth Rating**: Calculates visible body text word count, estimates reading duration, and rates content depth (*Thin*, *Moderate*, *Comprehensive*).
 - 🛡️ **Strict Non-HTML Content Protection**: Inspects `Content-Type` headers to reject direct PDFs, images, or JSON feeds before parsing.
 - ⏳ **Multi-Stage Animated Loading**: Smooth step transitions (*Fetching page...* → *Parsing HTML...* → *Generating Report...*).
@@ -67,7 +67,7 @@
 | **Frontend UI** | React 18 + TypeScript | Component-driven dashboard interface |
 | **Styling** | Tailwind CSS + Inter Font | SaaS design tokens, crisp cards, and typography |
 | **Animations** | Framer Motion | Smooth layout transitions and metric card reveals |
-| **Icons** | Lucide React | Clean SVG icon badges |
+| **Icons** | Lucide React | Clean SVG icon badges (`SearchCheck`) |
 | **Backend API** | Node.js + Express | RESTful API server with MVC separation |
 | **HTML Parser** | Cheerio | Fast HTML element and metadata extraction |
 | **HTTP Client** | Axios | Fetching origin HTML payloads with timeout protection |
@@ -91,7 +91,8 @@ graph TD
     HTMLCheck -- Yes --> Parser[Cheerio HTML Parser]
     Parser -->|Title, Meta, H1s, Alts, Words| Metrics[AuditResult Object]
     Metrics -->|JSON Response| ReactApp
-    ReactApp -->|Render Cards & Charts| Dashboard[Interactive Dashboard]
+    ReactApp -->|Render Cards & Score| HealthScore[0-100 Health Engine]
+    ReactApp -->|Generate Recommendations| Recommendations[Smart Recommendations]
 ```
 
 ---
@@ -103,9 +104,11 @@ pagepulse/
 ├── client/                     # React Frontend
 │   ├── src/
 │   │   ├── components/         # Modular UI Components
-│   │   │   ├── Navbar.tsx      # Sticky header with active scroll observer
+│   │   │   ├── Navbar.tsx      # Sticky header with SearchCheck branding
 │   │   │   ├── Hero.tsx        # Search bar & trust logo banner
 │   │   │   ├── LoadingOverlay.tsx # Animated step progress indicator
+│   │   │   ├── HealthScore.tsx # 0-100 Health Score calculation engine
+│   │   │   ├── SmartRecommendations.tsx # Automated recommendation cards
 │   │   │   ├── Dashboard.tsx   # 2-column metrics dashboard
 │   │   │   ├── MetricCard.tsx  # Reusable metric card wrapper
 │   │   │   ├── ErrorView.tsx   # Structured error state viewer
@@ -119,6 +122,9 @@ pagepulse/
 │   ├── index.html
 │   ├── tailwind.config.js
 │   └── vite.config.ts
+│
+├── docs/                       # Screenshot Placeholders
+│   └── images/                 # home.svg, results.svg, api.svg, etc.
 │
 └── server/                     # Express Backend API
     ├── src/
@@ -165,7 +171,7 @@ pagepulse/
   "wordCount": 1438,
   "readingTimeMinutes": 7,
   "contentDepth": "Comprehensive",
-  "timestamp": "2026-07-24T15:00:00.000Z"
+  "timestamp": "2026-07-24T16:00:00.000Z"
 }
 ```
 
@@ -173,9 +179,9 @@ pagepulse/
 ```json
 {
   "success": false,
-  "error": "Non HTML content detected",
+  "error": "Unsupported Content Type",
   "code": "NON_HTML",
-  "message": "The provided URL does not contain an HTML webpage. PagePulse currently analyzes HTML documents only."
+  "message": "The provided URL does not contain an HTML webpage."
 }
 ```
 
@@ -220,11 +226,11 @@ npm test
 ```
  RUN  v1.6.1 C:/Users/HP/Documents/webd/page plus/server
 
- ✓ src/tests/analyze.test.ts (6 tests) 879ms
+ ✓ src/tests/analyze.test.ts (6 tests) 1565ms
 
  Test Files  1 passed (1)
       Tests  6 passed (6)
-   Duration  2.12s
+   Duration  3.16s
 ```
 
 ---
@@ -239,13 +245,15 @@ npm test
 ## 🌐 Real-world Notes
 
 > [!NOTE]
-> **Anti-Bot Scraping Protections**: Enterprise websites (such as Amazon, LinkedIn, Cloudflare-protected endpoints, or specialized login portals) implement strict anti-bot measures, JavaScript challenges, or CAPTCHA proxies. When auditing these specific domains, origin servers may block automated HTTP requests or return fallback error pages. When this occurs, metadata may be restricted even though the PagePulse parser is functioning normally. This is expected real-world web behavior.
+> **Anti-Bot Scraping Protections**: Enterprise platforms (such as Amazon, LinkedIn, Cloudflare-protected endpoints, or specialized login portals) implement strict anti-bot measures, JavaScript challenges, or CAPTCHA proxies. When auditing these specific domains, origin servers may block automated HTTP requests or return fallback error pages. When this occurs, metadata may be restricted even though the PagePulse parser is functioning normally. This is expected real-world web behavior.
 
 ---
 
-## 🗺️ Roadmap & Known Limitations
+## 🗺️ Roadmap & Future Improvements
 
 - [x] Real-time latency measurement
+- [x] 0–100 Overall Health Score calculation
+- [x] Smart Actionable Recommendations
 - [x] SEO metadata & heading extraction
 - [x] Non-HTML header validation
 - [x] Interactive JSON report exports

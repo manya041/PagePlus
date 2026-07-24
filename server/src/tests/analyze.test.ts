@@ -1,8 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
+import axios from 'axios';
 import app from '../server';
 import { parseHtmlContent } from '../parsers/htmlParser';
 import { normalizeAndValidateUrl } from '../utils/urlValidator';
+
+vi.mock('axios');
 
 describe('PagePulse URL Validator Unit Tests', () => {
   it('should validate and normalize valid domains', () => {
@@ -68,18 +71,56 @@ describe('POST /api/analyze API Endpoint Integration Tests', () => {
     expect(response.body).toHaveProperty('code', 'INVALID_URL');
   });
 
-  it('should return 200 OK and audit metrics for a valid URL (example.com)', async () => {
+  it('should return 200 OK and audit metrics for a successful website audit', async () => {
+    const mockHtml = '<html><head><title>Example Domain</title></head><body><h1>Example Domain</h1><p>This domain is for use in illustrative examples in documents.</p></body></html>';
+    
+    (axios.get as any).mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'text/html; charset=UTF-8' },
+      data: mockHtml
+    });
+
     const response = await request(app)
       .post('/api/analyze')
       .send({ url: 'https://example.com' });
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('url');
+    expect(response.body).toHaveProperty('url', 'https://example.com/');
     expect(response.body).toHaveProperty('status', 200);
-    expect(response.body).toHaveProperty('responseTime');
-    expect(response.body).toHaveProperty('title');
-    expect(response.body).toHaveProperty('h1Count');
-    expect(response.body).toHaveProperty('missingAltImages');
+    expect(response.body).toHaveProperty('title', 'Example Domain');
+    expect(response.body).toHaveProperty('h1Count', 1);
     expect(response.body).toHaveProperty('wordCount');
+  });
+
+  it('should return 400 Bad Request for Non-HTML resources (PDF/Image)', async () => {
+    (axios.get as any).mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'application/pdf' },
+      data: '%PDF-1.4 dummy pdf bytes'
+    });
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://example.com/document.pdf' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('code', 'NON_HTML');
+    expect(response.body).toHaveProperty('error', 'Non HTML content detected');
+  });
+
+  it('should return 504 Timeout error when server times out', async () => {
+    const timeoutError = new Error('timeout of 10000ms exceeded');
+    (timeoutError as any).code = 'ECONNABORTED';
+
+    (axios.get as any).mockRejectedValueOnce(timeoutError);
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://slow-website.com' });
+
+    expect(response.status).toBe(504);
+    expect(response.body).toHaveProperty('code', 'TIMEOUT');
   });
 });

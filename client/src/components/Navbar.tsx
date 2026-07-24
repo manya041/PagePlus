@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Github, ArrowRight, BookOpen, Code, Sparkles } from 'lucide-react';
+import { SearchCheck, Github, ArrowRight, BookOpen, Code, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
   onReset: () => void;
@@ -51,14 +51,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onReset, onFocusInput }) => {
           className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-lg p-1"
         >
           <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm group-hover:bg-primary-hover transition-colors">
-            <Activity className="w-5 h-5 animate-pulse" />
+            <SearchCheck className="w-5 h-5" />
           </div>
           <div className="flex flex-col items-start text-left">
-            <span className="font-bold text-lg tracking-tight text-accent flex items-center gap-1.5">
+            <span className="font-bold text-lg tracking-tight text-accent leading-none">
               PagePulse
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary rounded-full uppercase tracking-wider">
-                Pro
-              </span>
+            </span>
+            <span className="text-[10px] font-semibold text-primary tracking-wider uppercase mt-0.5">
+              SEO Inspector
             </span>
           </div>
         </button>

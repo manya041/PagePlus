@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, ExternalLink, Heart } from 'lucide-react';
+import { SearchCheck, ExternalLink } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -11,11 +11,11 @@ export const Footer: React.FC = () => {
           {/* Brand Logo & Description */}
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <Activity className="w-4 h-4" />
+              <SearchCheck className="w-4 h-4" />
             </div>
             <div>
               <span className="font-bold text-accent tracking-tight text-base">PagePulse</span>
-              <p className="text-xs text-accent-subtle">Website Auditing & SEO Health Platform</p>
+              <p className="text-xs text-primary font-semibold uppercase tracking-wider">SEO Inspector Platform</p>
             </div>
           </div>
 

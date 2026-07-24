@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { AuditResult } from '../types';
 import { MetricCard } from './MetricCard';
+import { HealthScore } from './HealthScore';
+import { SmartRecommendations } from './SmartRecommendations';
 
 interface DashboardProps {
   result: AuditResult;
@@ -51,11 +53,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
   };
 
   // Response Time Classification
-  // <200ms Green, 200-500ms Orange, >500ms Red
   let responseBadgeVariant: 'success' | 'warning' | 'danger' = 'success';
   let responseBadgeText = 'Fast (<200ms)';
   let responseColorClass = 'text-emerald-600';
-  let responseProgressPercentage = Math.min(100, Math.max(10, Math.round((result.responseTime / 1000) * 100)));
 
   if (result.responseTime > 500) {
     responseBadgeVariant = 'danger';
@@ -83,7 +83,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
   }
 
   // Missing Alt Badge
-  // 0 Green, >0 Orange
   const altBadgeVariant: 'success' | 'warning' = result.missingAltImages === 0 ? 'success' : 'warning';
   const altBadgeText = result.missingAltImages === 0 ? 'Perfect Alt Coverage' : `${result.missingAltImages} Missing Alt`;
 
@@ -167,6 +166,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         </div>
       </motion.div>
 
+      {/* Website Health Score Card */}
+      <HealthScore result={result} />
+
+      {/* Smart Actionable Recommendations Card */}
+      <SmartRecommendations result={result} />
+
       {/* 2-Column Responsive Dashboard Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -185,16 +190,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             </div>
           }
           badge={{
-            text: isStatus2xx ? '200 Success' : `${result.status} Error`,
+            text: isStatus2xx ? '200 OK' : `${result.status} Status`,
             variant: statusBadgeVariant
           }}
-          description="The primary HTTP response status code delivered by the origin server upon receiving the audit GET request."
+          description="The primary HTTP response status code delivered by the web server upon receiving the audit request."
+          currentStatus={isStatus2xx ? 'Healthy (200 OK)' : 'Error Response'}
+          whyItMatters="HTTP status codes dictate whether search engines and site visitors can access page content."
+          recommendation={isStatus2xx ? 'Maintain current server infrastructure and SSL certificates.' : 'Inspect server logs and redirect configurations.'}
         />
 
-        {/* 2. Response Time Card with Progress Meter */}
+        {/* 2. Response Time Card */}
         <MetricCard
           icon={Zap}
-          label="Response Time"
+          label="Response Time (TTFB)"
           value={
             <div className="flex items-baseline gap-2">
               <span className={responseColorClass}>{result.responseTime}</span>
@@ -205,12 +213,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             text: responseBadgeText,
             variant: responseBadgeVariant
           }}
-          description="Time required for the remote server to return the complete initial HTML document payload."
+          description="Time required for the remote origin server to transmit the initial HTML response payload."
+          currentStatus={result.responseTime < 200 ? 'Optimal Performance' : 'Suboptimal Latency'}
+          whyItMatters="Fast response times prevent visitor bounce rates and improve Google Core Web Vitals rankings."
+          recommendation={result.responseTime < 200 ? 'Response latency is within optimal target (<200ms).' : 'Enable edge CDN caching, optimize database queries, and reduce backend processing.'}
         >
           {/* Visual Latency Meter */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs text-accent-subtle font-medium">
-              <span>Server Latency Meter</span>
+              <span>Server Latency Gauge</span>
               <span>{result.responseTime} ms</span>
             </div>
             <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
@@ -224,7 +235,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
               />
             </div>
             <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-              <span>0 ms (Ideal)</span>
+              <span>0 ms</span>
               <span>200 ms</span>
               <span>500 ms+</span>
             </div>
@@ -234,7 +245,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         {/* 3. Page Title Card */}
         <MetricCard
           icon={FileText}
-          label="Page Title"
+          label="Page Title Tag"
           value={
             <div className="text-base font-semibold text-accent leading-snug line-clamp-2">
               {result.title || <span className="text-rose-500 italic">No &lt;title&gt; tag found</span>}
@@ -244,7 +255,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             text: result.titleLength >= 30 && result.titleLength <= 60 ? 'Optimal Length' : `${result.titleLength} Chars`,
             variant: result.titleLength >= 30 && result.titleLength <= 60 ? 'success' : result.title ? 'warning' : 'danger'
           }}
-          description="The HTML title tag specifies the title of a webpage for browser tabs and search engine result listings."
+          description="The HTML title tag specifies the document headline displayed on browser tabs and search engine result pages."
+          currentStatus={result.title ? `${result.titleLength} Characters` : 'Missing Title'}
+          whyItMatters="Titles are the primary click-through anchor on search engine result snippets."
+          recommendation={result.titleLength >= 30 && result.titleLength <= 60 ? 'Title length is well optimized for search snippets.' : 'Target 50–60 characters to avoid truncation in Google search results.'}
         >
           <div className="flex items-center justify-between text-xs text-accent-subtle">
             <span>Character Count: <strong className="text-accent">{result.titleLength}</strong></span>
@@ -255,7 +269,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         {/* 4. Meta Description Card */}
         <MetricCard
           icon={BookOpen}
-          label="Meta Description"
+          label="Meta Description Tag"
           value={
             <div className="text-sm font-normal text-accent line-clamp-3 leading-relaxed">
               {result.metaDescription || <span className="text-rose-500 italic">No meta description specified</span>}
@@ -265,7 +279,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             text: result.metaDescription ? `${result.metaDescriptionLength} Chars` : 'Missing Tag',
             variant: result.metaDescription ? 'success' : 'danger'
           }}
-          description="Provides a concise summary of the page for search engine result snippets."
+          description="Provides a concise summary of the webpage content displayed under the title in search listings."
+          currentStatus={result.metaDescription ? 'Tag Present' : 'Tag Missing'}
+          whyItMatters="A compelling meta description increases click-through rates from organic search engine visitors."
+          recommendation={result.metaDescription ? 'Maintain meta description clarity and primary keywords.' : 'Add a descriptive meta description tag between 120–160 characters.'}
         >
           <div className="flex items-center justify-between text-xs text-accent-subtle">
             <span>Character Count: <strong className="text-accent">{result.metaDescriptionLength}</strong></span>
@@ -276,7 +293,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         {/* 5. H1 Count Card */}
         <MetricCard
           icon={Heading}
-          label="H1 Heading Count"
+          label="H1 Heading Structure"
           value={
             <div className="flex items-center gap-2">
               <span>{result.h1Count}</span>
@@ -287,7 +304,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             text: h1BadgeText,
             variant: h1BadgeVariant
           }}
-          description="HTML H1 headings define the main topic of a webpage. A page should contain exactly one H1 tag for search indexers."
+          description="H1 tags define the main subject of a webpage. Search crawlers expect exactly one H1 tag per document."
+          currentStatus={result.h1Count === 1 ? 'Optimal (1 H1)' : `${result.h1Count} H1 Tags Found`}
+          whyItMatters="Using a single H1 tag gives search engine crawlers a clear signal regarding the core document topic."
+          recommendation={result.h1Count === 1 ? 'Heading hierarchy complies with SEO standards.' : 'Ensure the document contains exactly one <h1> tag.'}
         >
           {result.h1List.length > 0 && (
             <div className="space-y-2">
@@ -316,14 +336,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         {/* 6. Missing Alt Images Card */}
         <MetricCard
           icon={ImageIcon}
-          label="Images Missing Alt Text"
+          label="Image Alt Accessibility"
           value={
             <div className="flex items-baseline gap-2">
               <span className={result.missingAltImages === 0 ? 'text-emerald-600' : 'text-amber-600'}>
                 {result.missingAltImages}
               </span>
               <span className="text-sm font-normal text-accent-subtle">
-                out of {result.totalImages} images
+                out of {result.totalImages} images missing alt text
               </span>
             </div>
           }
@@ -331,7 +351,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             text: altBadgeText,
             variant: altBadgeVariant
           }}
-          description="Alt text describes images for screen readers and search crawlers, improving web accessibility and SEO compliance."
+          description="Alt text describes images for screen readers and search crawlers, ensuring web accessibility (WCAG 2.1)."
+          currentStatus={result.missingAltImages === 0 ? '100% Accessible' : `${result.missingAltImages} Flagged Image(s)`}
+          whyItMatters="Alt text is required for visually impaired users using screen readers and helps Google Image search indexing."
+          recommendation={result.missingAltImages === 0 ? 'All body images contain non-empty alt text.' : 'Add descriptive alt attributes to all flagged image tags.'}
         >
           {result.missingAltDetails.length > 0 && (
             <div className="space-y-2">
@@ -373,14 +396,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
         <div className="space-y-1.5 max-w-xl">
           <div className="flex items-center gap-2 text-accent-subtle text-sm font-semibold">
             <BookOpen className="w-4 h-4 text-primary" />
-            <span>Page Word Count & Content Depth</span>
+            <span>Page Word Density & Content Depth</span>
           </div>
           <div className="text-3xl font-extrabold text-accent tracking-tight flex items-baseline gap-2">
             <span>{result.wordCount.toLocaleString()}</span>
             <span className="text-sm font-normal text-accent-subtle">Visible Words</span>
           </div>
           <p className="text-xs text-accent-subtle leading-relaxed">
-            Calculated after removing non-content markup (scripts, styling, SVG elements). Higher word counts generally correlate with richer topical relevance.
+            Extracted visible text after stripping scripts, styles, header/footer markup, and SVG elements. Richer content depth generally correlates with higher organic topical authority.
           </p>
         </div>
 
@@ -390,7 +413,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             <p className="text-sm font-bold text-accent mt-0.5">{result.contentDepth}</p>
           </div>
           <div className="text-center px-4">
-            <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Est. Reading Time</p>
+            <p className="text-[10px] uppercase tracking-wider font-semibold text-slate-400">Est. Reading Duration</p>
             <p className="text-sm font-bold text-primary mt-0.5">~{result.readingTimeMinutes} min</p>
           </div>
         </div>
