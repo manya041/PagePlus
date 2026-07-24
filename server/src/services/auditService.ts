@@ -57,6 +57,7 @@ export class AuditService {
         url: targetUrl,
         status: response.status,
         statusText: response.statusText || statusTextMap[response.status] || 'HTTP Status',
+        contentType: String(response.headers['content-type'] || 'text/html'),
         responseTime,
         title: parsedMetrics.title,
         titleLength: parsedMetrics.titleLength,

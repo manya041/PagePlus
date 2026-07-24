@@ -147,6 +147,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
               <span>{result.status} {result.statusText}</span>
             </div>
 
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+              <FileText className="w-3.5 h-3.5 text-primary" />
+              <span>{result.contentType}</span>
+            </div>
+
             <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
               responseBadgeVariant === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
               responseBadgeVariant === 'warning' ? 'bg-amber-50 text-amber-700 border-amber-200' :

@@ -2,6 +2,7 @@ export interface AuditResult {
   url: string;
   status: number;
   statusText: string;
+  contentType: string;
   responseTime: number; // ms
   title: string | null;
   titleLength: number;

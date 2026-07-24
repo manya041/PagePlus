@@ -88,6 +88,7 @@ describe('POST /api/analyze API Endpoint Integration Tests', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('url', 'https://example.com/');
     expect(response.body).toHaveProperty('status', 200);
+    expect(response.body).toHaveProperty('contentType', 'text/html; charset=UTF-8');
     expect(response.body).toHaveProperty('title', 'Example Domain');
     expect(response.body).toHaveProperty('h1Count', 1);
   });
