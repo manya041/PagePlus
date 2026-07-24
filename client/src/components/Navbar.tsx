@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onReset, onFocusInput }) => {
             Docs
           </button>
           <a
-            href="https://github.com"
+            href="https://github.com/manya041/PagePlus"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent-subtle hover:text-accent transition-colors flex items-center gap-1.5"

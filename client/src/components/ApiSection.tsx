@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
-import { Copy, Check, Code2, Server, Terminal, Sparkles } from 'lucide-react';
+import { Copy, Check, Code2, Server, Terminal } from 'lucide-react';
 
 export const ApiSection: React.FC = () => {
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<'curl' | 'json'>('curl');
 
   const curlCode = `curl -X POST https://pagepulse-api.render.com/api/analyze \\
   -H "Content-Type: application/json" \\
   -d '{"url": "https://openai.com"}'`;
 
+  const jsonRequestCode = `POST /api/analyze
+Content-Type: application/json
+
+{
+  "url": "https://openai.com"
+}`;
+
   const jsonResponse = `{
   "status": 200,
-  "statusText": "OK",
   "responseTime": 184,
   "title": "OpenAI",
   "metaDescription": "Transforming work and creativity with AI...",
   "h1Count": 1,
   "missingAltImages": 2,
   "wordCount": 1438,
-  "timestamp": "2026-07-24T15:00:00.000Z"
+  "timestamp": "2026-07-24T17:50:00.000Z"
 }`;
 
   const fieldsExplanation = [
@@ -31,7 +38,8 @@ export const ApiSection: React.FC = () => {
   ];
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(curlCode);
+    const textToCopy = activeTab === 'curl' ? curlCode : jsonRequestCode;
+    navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -53,7 +61,7 @@ export const ApiSection: React.FC = () => {
             </h2>
 
             <p className="text-accent-subtle text-base leading-relaxed">
-              Integrate real-time website audits into your deployment pipelines, monitoring systems, or custom dashboards.
+              Integrate real-time website audits into your deployment pipelines, monitoring systems, or custom dashboards with our clean REST API.
             </p>
 
             <div className="space-y-3 pt-2">
@@ -82,23 +90,42 @@ export const ApiSection: React.FC = () => {
                 <div className="w-3 h-3 rounded-full bg-rose-500/80" />
                 <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                <span className="text-xs font-mono text-slate-400 ml-2">POST /api/analyze</span>
+                <div className="flex items-center gap-1.5 ml-3 font-mono text-xs">
+                  <button
+                    onClick={() => setActiveTab('curl')}
+                    className={`px-2.5 py-1 rounded transition-colors ${
+                      activeTab === 'curl' ? 'bg-primary text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    cURL Command
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('json')}
+                    className={`px-2.5 py-1 rounded transition-colors ${
+                      activeTab === 'json' ? 'bg-primary text-white font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    JSON Request
+                  </button>
+                </div>
               </div>
               <button
                 onClick={handleCopy}
                 className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied' : 'Copy cURL'}</span>
+                <span>{copied ? 'Copied' : 'Copy'}</span>
               </button>
             </div>
 
             {/* Terminal Body */}
             <div className="p-4 space-y-4 font-mono text-xs overflow-x-auto">
               <div>
-                <p className="text-slate-400 font-sans text-[11px] mb-1.5 uppercase tracking-wider font-semibold">Request Payload Example</p>
+                <p className="text-slate-400 font-sans text-[11px] mb-1.5 uppercase tracking-wider font-semibold">
+                  {activeTab === 'curl' ? 'cURL Request Example' : 'JSON POST Request Format'}
+                </p>
                 <pre className="text-emerald-400 bg-slate-950 p-3 rounded-lg leading-relaxed whitespace-pre-wrap">
-                  {curlCode}
+                  {activeTab === 'curl' ? curlCode : jsonRequestCode}
                 </pre>
               </div>
 

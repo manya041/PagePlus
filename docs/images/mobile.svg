@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="700" viewBox="0 0 400 700" fill="none">
+  <rect width="400" height="700" fill="#F8FAFC" rx="24"/>
+  <rect x="15" y="15" width="370" height="670" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" rx="16"/>
+  <text x="200" y="330" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="bold" fill="#0F172A">Responsive Mobile View</text>
+  <text x="200" y="370" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#2563EB">PagePulse SEO Inspector Mobile</text>
+</svg>

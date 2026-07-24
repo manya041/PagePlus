@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
           <div className="flex flex-wrap items-center gap-6 text-xs font-semibold text-accent-subtle">
             <a href="#features" className="hover:text-accent transition-colors">Features</a>
             <a href="#api-docs" className="hover:text-accent transition-colors">API Docs</a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
+            <a href="https://github.com/manya041/PagePlus" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">GitHub</a>
             <a href="https://digitalheroesco.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Digital Heroes</a>
           </div>
 

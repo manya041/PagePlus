@@ -9,7 +9,7 @@
 [![React 18](https://img.shields.io/badge/React-18-0f172a?style=for-the-badge&logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.1-646cff?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Express](https://img.shields.io/badge/Express-4.19-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
-[![Vitest](https://img.shields.io/badge/Vitest-6%20Passed-10b981?style=for-the-badge&logo=vitest)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-12%20Passed-10b981?style=for-the-badge&logo=vitest)](https://vitest.dev/)
 
 **Instant 0–100 Website Health Scoring, Response Latency, SEO Metadata, Accessibility & Content Depth Engine.**
 
@@ -27,27 +27,43 @@ Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Sup
 
 ---
 
-## 📸 Interface Screenshots & Demo
+## 📸 Interface Screenshots & Gallery
 
-### 1. Interactive Health Score Dashboard
+### 1. Landing Page
+![Landing Page View](docs/images/home.svg)
+
+### 2. Audit Results Dashboard
 ![Results View](docs/images/results.svg)
 
-### 2. Multi-Stage Animated Audit Engine
-![Audit View](docs/images/audit.svg)
+### 3. Website Health Score (0-100)
+![Health Score View](docs/images/health-score.svg)
 
-### 3. Developer REST API Docs
-![API View](docs/images/api.svg)
+### 4. Smart Actionable Recommendations
+![Recommendations View](docs/images/recommendations.svg)
 
-### 4. Non-HTML Error Resilience
-![Errors View](docs/images/errors.svg)
+### 5. Developer REST API Documentation
+![API Docs View](docs/images/api.svg)
 
-*(Demo GIF Placeholder: `assets/demo.gif`)*
+### 6. Unsupported Content Type Error Card
+![Non-HTML Error View](docs/images/errors.svg)
+
+### 7. Connection Timeout Error Boundary
+![Timeout Error View](docs/images/error-timeout.svg)
+
+### 8. Invalid URL Validation Error
+![Invalid URL View](docs/images/error-url.svg)
+
+### 9. Responsive Mobile Experience
+![Mobile View](docs/images/mobile.svg)
+
+### 10. Production Deployment Setup
+![Deployment View](docs/images/deployment.svg)
 
 ---
 
 ## ✨ Features
 
-- 🏆 **0–100 Overall Website Health Score**: Computes an aggregate health index (Grades `A+`, `A`, `B`, `C`, `F`) across status, latency, SEO tags, headings, and image alt text.
+- 🏆 **0–100 Overall Website Health Score**: Computes an aggregate health index (Grades `A+`, `A`, `B`, `C`, `F`) across status, latency, SEO tags, headings, and image alt text with a **Top Issues Detected** summary panel.
 - 💡 **Smart Actionable Recommendations**: Dynamically generates optimization hints for missing meta tags, suboptimal titles, heading hierarchy gaps, missing alt text, slow latency, or low word count.
 - ⚡ **Response Time & Speed Benchmarks**: Tracks HTTP document response latency and classifies server performance (`<200ms` Fast, `200-500ms` Moderate, `>500ms` Slow).
 - 🏷️ **SEO Title & Meta Description Audit**: Evaluates `<title>` tag lengths against 50–60 character targets and inspects meta description presence.
@@ -56,7 +72,7 @@ Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Sup
 - 📚 **Word Density & Content Depth Rating**: Calculates visible body text word count, estimates reading duration, and rates content depth (*Thin*, *Moderate*, *Comprehensive*).
 - 🛡️ **Strict Non-HTML Content Protection**: Inspects `Content-Type` headers to reject direct PDFs, images, or JSON feeds before parsing.
 - ⏳ **Multi-Stage Animated Loading**: Smooth step transitions (*Fetching page...* → *Parsing HTML...* → *Generating Report...*).
-- 📡 **Developer REST API**: Clean `POST /api/analyze` endpoint with cURL documentation and JSON report exports.
+- 📡 **Developer REST API**: Clean `POST /api/analyze` endpoint with cURL & JSON request documentation and JSON report exports.
 
 ---
 
@@ -92,6 +108,7 @@ graph TD
     Parser -->|Title, Meta, H1s, Alts, Words| Metrics[AuditResult Object]
     Metrics -->|JSON Response| ReactApp
     ReactApp -->|Render Cards & Score| HealthScore[0-100 Health Engine]
+    ReactApp -->|Top Issues Panel| TopIssues[Top Issues Summary]
     ReactApp -->|Generate Recommendations| Recommendations[Smart Recommendations]
 ```
 
@@ -104,21 +121,22 @@ pagepulse/
 ├── client/                     # React Frontend
 │   ├── src/
 │   │   ├── components/         # Modular UI Components
-│   │   │   ├── Navbar.tsx      # Sticky header with SearchCheck branding
+│   │   │   ├── Navbar.tsx      # Sticky header with SearchCheck branding & active scroll observer
 │   │   │   ├── Hero.tsx        # Search bar & trust logo banner
 │   │   │   ├── LoadingOverlay.tsx # Animated step progress indicator
-│   │   │   ├── HealthScore.tsx # 0-100 Health Score calculation engine
+│   │   │   ├── HealthScore.tsx # 0-100 Health Score calculation engine & Top Issues panel
 │   │   │   ├── SmartRecommendations.tsx # Automated recommendation cards
 │   │   │   ├── Dashboard.tsx   # 2-column metrics dashboard
 │   │   │   ├── MetricCard.tsx  # Reusable metric card wrapper
-│   │   │   ├── ErrorView.tsx   # Structured error state viewer
+│   │   │   ├── ErrorView.tsx   # Structured non-HTML & system error state viewer
 │   │   │   ├── FeaturesSection.tsx # Feature grid section
-│   │   │   ├── ApiSection.tsx  # Interactive API documentation
+│   │   │   ├── ApiSection.tsx  # cURL & JSON API documentation tabs
 │   │   │   ├── DocsSection.tsx # How it works & engine lifecycle
 │   │   │   └── Footer.tsx      # Footer with Digital Heroes link
 │   │   ├── types/              # TypeScript interfaces
 │   │   ├── App.tsx             # Main application orchestrator
 │   │   └── main.tsx            # React mounting entrypoint
+│   ├── public/                 # favicon.svg (SearchCheck icon)
 │   ├── index.html
 │   ├── tailwind.config.js
 │   └── vite.config.ts
@@ -146,7 +164,7 @@ pagepulse/
 
 ### Endpoint: `POST /api/analyze`
 
-#### Request Payload
+#### JSON Request Body
 ```json
 {
   "url": "https://openai.com"
@@ -156,7 +174,6 @@ pagepulse/
 #### Successful Response (`200 OK`)
 ```json
 {
-  "url": "https://openai.com/",
   "status": 200,
   "statusText": "OK",
   "responseTime": 184,
@@ -171,7 +188,7 @@ pagepulse/
   "wordCount": 1438,
   "readingTimeMinutes": 7,
   "contentDepth": "Comprehensive",
-  "timestamp": "2026-07-24T16:00:00.000Z"
+  "timestamp": "2026-07-24T17:50:00.000Z"
 }
 ```
 
@@ -181,13 +198,13 @@ pagepulse/
   "success": false,
   "error": "Unsupported Content Type",
   "code": "NON_HTML",
-  "message": "The provided URL does not contain an HTML webpage."
+  "message": "The provided URL is not an HTML webpage."
 }
 ```
 
-#### Example cURL Command
+#### cURL Command
 ```bash
-curl -X POST http://localhost:5000/api/analyze \
+curl -X POST https://pagepulse-api.render.com/api/analyze \
   -H "Content-Type: application/json" \
   -d '{"url": "https://openai.com"}'
 ```
@@ -226,11 +243,11 @@ npm test
 ```
  RUN  v1.6.1 C:/Users/HP/Documents/webd/page plus/server
 
- ✓ src/tests/analyze.test.ts (6 tests) 1565ms
+ ✓ src/tests/analyze.test.ts (12 tests) 106ms
 
  Test Files  1 passed (1)
-      Tests  6 passed (6)
-   Duration  3.16s
+      Tests  12 passed (12)
+   Duration  1.56s
 ```
 
 ---
@@ -253,6 +270,7 @@ npm test
 
 - [x] Real-time latency measurement
 - [x] 0–100 Overall Health Score calculation
+- [x] Top Issues Detected summary panel
 - [x] Smart Actionable Recommendations
 - [x] SEO metadata & heading extraction
 - [x] Non-HTML header validation
@@ -265,5 +283,7 @@ npm test
 ## 📄 License & Attribution
 
 Built for **[Digital Heroes Training Task](https://digitalheroesco.com)**.
+
+Repository: **[https://github.com/manya041/PagePlus](https://github.com/manya041/PagePlus)**
 
 Distributed under the **MIT License**.
