@@ -18,7 +18,9 @@ import {
   ChevronDown,
   ChevronUp,
   ShieldCheck,
-  Zap
+  Zap,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 import { AuditResult } from '../types';
 import { MetricCard } from './MetricCard';
@@ -82,13 +84,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
     h1BadgeText = `Multiple H1s (${result.h1Count})`;
   }
 
-  // Missing Alt Badge
-  const altBadgeVariant: 'success' | 'warning' = result.missingAltImages === 0 ? 'success' : 'warning';
-  const altBadgeText = result.missingAltImages === 0 ? 'Perfect Alt Coverage' : `${result.missingAltImages} Missing Alt`;
+  // Missing Alt Badge & Zero Images Handling
+  const noImages = result.totalImages === 0;
+  const altBadgeVariant: 'success' | 'warning' | 'info' = noImages ? 'info' : result.missingAltImages === 0 ? 'success' : 'warning';
+  const altBadgeText = noImages ? 'No Images Found' : result.missingAltImages === 0 ? 'Perfect Alt Coverage' : `${result.missingAltImages} Missing Alt`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
+      {/* Limited Analysis Informational Banner for Non-2xx Responses */}
+      {!isStatus2xx && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3 text-amber-900 shadow-sm"
+        >
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-bold tracking-tight">Limited Analysis</h4>
+            <p className="text-xs text-amber-800 leading-relaxed mt-0.5">
+              The requested webpage could not be fully accessed (HTTP {result.status} {result.statusText}). Some audit metrics are based on the returned error page rather than the intended webpage.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Top Header Summary Banner */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}
@@ -194,9 +214,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
             variant: statusBadgeVariant
           }}
           description="The primary HTTP response status code delivered by the web server upon receiving the audit request."
-          currentStatus={isStatus2xx ? 'Healthy (200 OK)' : 'Error Response'}
+          currentStatus={isStatus2xx ? 'Healthy (200 OK)' : `${result.status} ${result.statusText}`}
           whyItMatters="HTTP status codes dictate whether search engines and site visitors can access page content."
-          recommendation={isStatus2xx ? 'Maintain current server infrastructure and SSL certificates.' : 'Inspect server logs and redirect configurations.'}
+          recommendation={isStatus2xx ? 'Maintain current server infrastructure and SSL certificates.' : 'The server denied access or returned an error status. Possible causes include Authentication, Firewall rules, Anti-bot protection, IP restrictions, or Origin server misconfiguration. If auditing a third-party website, try analyzing a publicly accessible page.'}
         />
 
         {/* 2. Response Time Card */}
@@ -333,28 +353,34 @@ export const Dashboard: React.FC<DashboardProps> = ({ result, onReAudit }) => {
           )}
         </MetricCard>
 
-        {/* 6. Missing Alt Images Card */}
+        {/* 6. Missing Alt Images Card (Handles zero images cleanly) */}
         <MetricCard
           icon={ImageIcon}
           label="Image Alt Accessibility"
           value={
-            <div className="flex items-baseline gap-2">
-              <span className={result.missingAltImages === 0 ? 'text-emerald-600' : 'text-amber-600'}>
-                {result.missingAltImages}
-              </span>
-              <span className="text-sm font-normal text-accent-subtle">
-                out of {result.totalImages} images missing alt text
-              </span>
-            </div>
+            noImages ? (
+              <div className="text-xl font-bold text-accent font-sans">
+                No Images Found
+              </div>
+            ) : (
+              <div className="flex items-baseline gap-2">
+                <span className={result.missingAltImages === 0 ? 'text-emerald-600' : 'text-amber-600'}>
+                  {result.missingAltImages}
+                </span>
+                <span className="text-sm font-normal text-accent-subtle">
+                  out of {result.totalImages} images missing alt text
+                </span>
+              </div>
+            )
           }
           badge={{
             text: altBadgeText,
             variant: altBadgeVariant
           }}
-          description="Alt text describes images for screen readers and search crawlers, ensuring web accessibility (WCAG 2.1)."
-          currentStatus={result.missingAltImages === 0 ? '100% Accessible' : `${result.missingAltImages} Flagged Image(s)`}
+          description={noImages ? "No image elements were detected on this webpage." : "Alt text describes images for screen readers and search crawlers, ensuring web accessibility (WCAG 2.1)."}
+          currentStatus={noImages ? 'No Images Detected' : result.missingAltImages === 0 ? '100% Accessible' : `${result.missingAltImages} Flagged Image(s)`}
           whyItMatters="Alt text is required for visually impaired users using screen readers and helps Google Image search indexing."
-          recommendation={result.missingAltImages === 0 ? 'All body images contain non-empty alt text.' : 'Add descriptive alt attributes to all flagged image tags.'}
+          recommendation={noImages ? 'No image tags detected on this document.' : result.missingAltImages === 0 ? 'All body images contain non-empty alt text.' : 'Add descriptive alt attributes to all flagged image tags.'}
         >
           {result.missingAltDetails.length > 0 && (
             <div className="space-y-2">
