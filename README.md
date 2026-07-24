@@ -78,9 +78,9 @@ Built with a clean commercial aesthetic matching modern SaaS platforms such as S
 ### 5. Documentation
 <div align="center">
 
-![Documentation & Engine Architecture Screenshot](docs/images/docs-engine.svg)
+![Documentation showing the complete audit lifecycle](docs/images/docs-engine.png)
 
-*Execution lifecycle documentation explaining HTTP response evaluation, header validation, and metric computation.*
+*Documentation showing the complete audit lifecycle from URL submission to report generation.*
 
 </div>
 
