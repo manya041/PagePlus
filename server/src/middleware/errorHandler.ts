@@ -11,6 +11,7 @@ export function errorHandler(
 
   const statusCode = err.status || 500;
   const response: ApiErrorResponse = {
+    success: false,
     error: err.error || 'Server Error',
     code: err.code || 'SERVER_ERROR',
     message: err.message || 'An unexpected error occurred while processing your request.'

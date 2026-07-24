@@ -23,6 +23,7 @@ export interface AnalyzeRequest {
 }
 
 export interface ApiErrorResponse {
+  success?: boolean;
   error: string;
   code: 'INVALID_URL' | 'TIMEOUT' | 'NON_HTML' | 'NETWORK_ERROR' | 'NOT_FOUND' | 'SERVER_ERROR';
   message: string;

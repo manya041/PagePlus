@@ -27,9 +27,10 @@ export class AuditService {
 
       if (!isHtml) {
         const nonHtmlErr: ApiErrorResponse = {
-          error: 'Non HTML content detected',
+          success: false,
+          error: 'Unsupported Content Type',
           code: 'NON_HTML',
-          message: 'The provided URL does not contain an HTML webpage. PagePulse currently analyzes HTML documents only.',
+          message: 'The provided URL is not an HTML webpage.',
           status: 400
         };
         throw nonHtmlErr;

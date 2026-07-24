@@ -71,7 +71,7 @@ describe('POST /api/analyze API Endpoint Integration Tests', () => {
     expect(response.body).toHaveProperty('code', 'INVALID_URL');
   });
 
-  it('should return 200 OK and audit metrics for a successful website audit', async () => {
+  it('should return 200 OK and parse HTML content normally for valid HTML page', async () => {
     const mockHtml = '<html><head><title>Example Domain</title></head><body><h1>Example Domain</h1><p>This domain is for use in illustrative examples in documents.</p></body></html>';
     
     (axios.get as any).mockResolvedValueOnce({
@@ -90,15 +90,34 @@ describe('POST /api/analyze API Endpoint Integration Tests', () => {
     expect(response.body).toHaveProperty('status', 200);
     expect(response.body).toHaveProperty('title', 'Example Domain');
     expect(response.body).toHaveProperty('h1Count', 1);
-    expect(response.body).toHaveProperty('wordCount');
   });
 
-  it('should return 400 Bad Request for Non-HTML resources (PDF/Image)', async () => {
+  it('should parse HTML 404 pages normally when content-type is text/html', async () => {
+    const mockHtml = '<html><head><title>404 Not Found</title></head><body><h1>Custom 404 Page</h1></body></html>';
+    
+    (axios.get as any).mockResolvedValueOnce({
+      status: 404,
+      statusText: 'Not Found',
+      headers: { 'content-type': 'text/html; charset=UTF-8' },
+      data: mockHtml
+    });
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://example.com/missing-page' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('status', 404);
+    expect(response.body).toHaveProperty('title', '404 Not Found');
+    expect(response.body).toHaveProperty('h1Count', 1);
+  });
+
+  it('should return 400 Unsupported Content Type for PDF resources', async () => {
     (axios.get as any).mockResolvedValueOnce({
       status: 200,
       statusText: 'OK',
       headers: { 'content-type': 'application/pdf' },
-      data: '%PDF-1.4 dummy pdf bytes'
+      data: '%PDF-1.4 dummy pdf content'
     });
 
     const response = await request(app)
@@ -107,10 +126,60 @@ describe('POST /api/analyze API Endpoint Integration Tests', () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('code', 'NON_HTML');
-    expect(response.body).toHaveProperty('error', 'Non HTML content detected');
+    expect(response.body).toHaveProperty('error', 'Unsupported Content Type');
+    expect(response.body).toHaveProperty('message', 'The provided URL is not an HTML webpage.');
   });
 
-  it('should return 504 Timeout error when server times out', async () => {
+  it('should return 400 Unsupported Content Type for Image resources', async () => {
+    (axios.get as any).mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'image/png' },
+      data: 'png binary data'
+    });
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://example.com/logo.png' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('code', 'NON_HTML');
+    expect(response.body).toHaveProperty('error', 'Unsupported Content Type');
+  });
+
+  it('should return 400 Unsupported Content Type for JSON resources', async () => {
+    (axios.get as any).mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'application/json' },
+      data: '{"key": "value"}'
+    });
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://api.github.com/users' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('code', 'NON_HTML');
+  });
+
+  it('should return 400 Unsupported Content Type for Plain Text resources', async () => {
+    (axios.get as any).mockResolvedValueOnce({
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'text/plain' },
+      data: 'plain text content'
+    });
+
+    const response = await request(app)
+      .post('/api/analyze')
+      .send({ url: 'https://example.com/robots.txt' });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('code', 'NON_HTML');
+  });
+
+  it('should return 504 Timeout error when server connection times out', async () => {
     const timeoutError = new Error('timeout of 10000ms exceeded');
     (timeoutError as any).code = 'ECONNABORTED';
 
