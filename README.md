@@ -1,8 +1,8 @@
-# 🔍 PagePulse - Commercial Web Auditing & SEO Inspector SaaS Platform
+# 🔍 PagePulse — Commercial Web Auditing & SEO Inspector SaaS Platform
 
 <div align="center">
 
-![PagePulse SaaS Banner](docs/images/home.svg)
+🚀 **Live Demo**: [https://pagepulse-seo.vercel.app](https://pagepulse-seo.vercel.app)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-2563eb?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -13,51 +13,87 @@
 
 **Instant 0–100 Website Health Scoring, Response Latency, SEO Metadata, Accessibility & Content Depth Engine.**
 
-[Live Demo](#-deployment-guide) • [API Documentation](#-api-contract) • [Architecture](#-architecture) • [Getting Started](#-getting-started)
+[Live Demo](https://pagepulse-seo.vercel.app) • [API Contract](#-api-documentation) • [Architecture](#-architecture) • [Getting Started](#-installation--local-development)
 
 ---
 
 </div>
 
-## 📖 Overview
+## 📖 Project Overview
 
 **PagePulse** is a production-grade website auditing and SEO inspection SaaS platform designed to analyze any public webpage in real time. It combines TTFB server latency measurement, HTML tag optimization, heading hierarchy, image alt accessibility, and text word density into a single interactive 2-column SaaS dashboard.
 
-Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Supabase.
+The application evaluates websites using a strict 3-tier response decisioning pipeline and displays a calculated **0–100 Overall Website Health Index** alongside automated **Top Issues Detected** and actionable recommendations.
+
+Built with a clean commercial aesthetic matching modern SaaS platforms such as Stripe, Vercel, Linear, and Supabase.
 
 ---
 
-## 📸 Interface Screenshots & Gallery
+## 📸 Screenshots & Product Gallery
 
-### 1. Landing Page
-![Landing Page View](docs/images/home.svg)
+### 1. Home Page
+<div align="center">
 
-### 2. Audit Results Dashboard
-![Results View](docs/images/results.svg)
+![Home Page Screenshot](docs/images/home.png)
 
-### 3. Website Health Score (0-100)
-![Health Score View](docs/images/health-score.svg)
+*PagePulse Hero section allowing users to instantly analyze any webpage URL with quick sample links.*
 
-### 4. Smart Actionable Recommendations
-![Recommendations View](docs/images/recommendations.svg)
+</div>
 
-### 5. Developer REST API Documentation
-![API Docs View](docs/images/api.svg)
+---
 
-### 6. Unsupported Content Type Error Card
-![Non-HTML Error View](docs/images/errors.svg)
+### 2. Successful Audit Dashboard
+<div align="center">
 
-### 7. Connection Timeout Error Boundary
-![Timeout Error View](docs/images/error-timeout.svg)
+![Successful Audit Dashboard Screenshot](docs/images/audit-dashboard.png)
 
-### 8. Invalid URL Validation Error
-![Invalid URL View](docs/images/error-url.svg)
+*Vercel website audit report displaying an Overall Health Index of 82/100, Top Issues Detected summary panel, category breakdown, and metric cards.*
 
-### 9. Responsive Mobile Experience
-![Mobile View](docs/images/mobile.svg)
+</div>
 
-### 10. Production Deployment Setup
-![Deployment View](docs/images/deployment.svg)
+---
+
+### 3. Multi-Stage Animated Audit Engine
+<div align="center">
+
+![Multi-Stage Animated Audit Engine Screenshot](docs/images/loading-engine.png)
+
+*Interactive loading state illustrating real-time step execution: Fetching page HTTP payload → Parsing HTML structure → Generating audit report.*
+
+</div>
+
+---
+
+### 4. Developer REST API
+<div align="center">
+
+![Developer REST API Documentation Screenshot](docs/images/api-docs.png)
+
+*Developer API documentation section featuring cURL & raw JSON request tabs, field schemas, and interactive code copy toolbar.*
+
+</div>
+
+---
+
+### 5. Documentation
+<div align="center">
+
+![Documentation & Engine Architecture Screenshot](docs/images/docs-engine.svg)
+
+*Execution lifecycle documentation explaining HTTP response evaluation, header validation, and metric computation.*
+
+</div>
+
+---
+
+### 6. Unsupported Content Handling
+<div align="center">
+
+![Unsupported Content Handling Screenshot](docs/images/unsupported-content.png)
+
+*Dedicated centered empty-state error page rendered when analyzing non-HTML resources (PDFs, images, or JSON feeds).*
+
+</div>
 
 ---
 
@@ -68,7 +104,7 @@ Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Sup
 - ⚡ **Response Time & Speed Benchmarks**: Tracks HTTP document response latency and classifies server performance (`<200ms` Fast, `200-500ms` Moderate, `>500ms` Slow).
 - 🏷️ **SEO Title & Meta Description Audit**: Evaluates `<title>` tag lengths against 50–60 character targets and inspects meta description presence.
 - 📐 **Heading Hierarchy Inspection**: Counts `<h1>` elements to flag missing headings or multiple H1 tags for search indexers.
-- ♿ **Image Alt Accessibility Coverage**: Scans body images to detect missing `alt` attributes and provides an expandable image source inspector.
+- ♿ **Image Alt Accessibility Coverage**: Scans body images to detect missing `alt` attributes and provides an expandable image source inspector or *"No Images Found"* indicator.
 - 📚 **Word Density & Content Depth Rating**: Calculates visible body text word count, estimates reading duration, and rates content depth (*Thin*, *Moderate*, *Comprehensive*).
 - 🛡️ **Strict Non-HTML Content Protection**: Inspects `Content-Type` headers to reject direct PDFs, images, or JSON feeds before parsing.
 - ⏳ **Multi-Stage Animated Loading**: Smooth step transitions (*Fetching page...* → *Parsing HTML...* → *Generating Report...*).
@@ -76,7 +112,7 @@ Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Sup
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
 | Component | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -91,9 +127,7 @@ Built with a clean commercial aesthetic matching Stripe, Vercel, Linear, and Sup
 
 ---
 
-## 🏗 Architecture & Design Pattern
-
-PagePulse uses a decoupled monorepo architecture:
+## 🏗️ Architecture
 
 ```mermaid
 graph TD
@@ -114,68 +148,60 @@ graph TD
 
 ---
 
-## 📁 Directory Tree
+## ⚙️ Installation & Local Development
 
+### Prerequisites
+- **Node.js**: v18.x or higher
+- **npm**: v9.x or higher
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/manya041/PagePlus.git
+cd PagePlus
 ```
-pagepulse/
-├── client/                     # React Frontend
-│   ├── src/
-│   │   ├── components/         # Modular UI Components
-│   │   │   ├── Navbar.tsx      # Sticky header with SearchCheck branding & active scroll observer
-│   │   │   ├── Hero.tsx        # Search bar & trust logo banner
-│   │   │   ├── LoadingOverlay.tsx # Animated step progress indicator
-│   │   │   ├── HealthScore.tsx # 0-100 Health Score calculation engine & Top Issues panel
-│   │   │   ├── SmartRecommendations.tsx # Automated recommendation cards
-│   │   │   ├── Dashboard.tsx   # 2-column metrics dashboard
-│   │   │   ├── MetricCard.tsx  # Reusable metric card wrapper
-│   │   │   ├── ErrorView.tsx   # Structured non-HTML & system error state viewer
-│   │   │   ├── FeaturesSection.tsx # Feature grid section
-│   │   │   ├── ApiSection.tsx  # cURL & JSON API documentation tabs
-│   │   │   ├── DocsSection.tsx # How it works & engine lifecycle
-│   │   │   └── Footer.tsx      # Footer with Digital Heroes link
-│   │   ├── types/              # TypeScript interfaces
-│   │   ├── App.tsx             # Main application orchestrator
-│   │   └── main.tsx            # React mounting entrypoint
-│   ├── public/                 # favicon.svg (SearchCheck icon)
-│   ├── index.html
-│   ├── tailwind.config.js
-│   └── vite.config.ts
-│
-├── docs/                       # Screenshot Placeholders
-│   └── images/                 # home.svg, results.svg, api.svg, etc.
-│
-└── server/                     # Express Backend API
-    ├── src/
-    │   ├── controllers/        # analyzeController.ts
-    │   ├── middleware/         # errorHandler.ts
-    │   ├── parsers/            # htmlParser.ts (Cheerio logic)
-    │   ├── routes/             # apiRoutes.ts
-    │   ├── services/           # auditService.ts (Axios + timing)
-    │   ├── utils/              # urlValidator.ts
-    │   ├── tests/              # analyze.test.ts (Vitest)
-    │   └── server.ts           # Server bootstrap
-    ├── package.json
-    └── tsconfig.json
+
+### 2. Backend Server Setup
+```bash
+cd server
+npm install
+npm run dev
 ```
+*Backend server runs at `http://localhost:5000`*
+
+### 3. Frontend Client Setup
+```bash
+cd ../client
+npm install
+npm run dev
+```
+*Frontend client runs at `http://localhost:5173`*
 
 ---
 
-## 📡 API Contract
+## 📡 API Documentation
 
 ### Endpoint: `POST /api/analyze`
 
-#### JSON Request Body
+#### Live Production API Endpoint
+`https://pagepulse-api.render.com/api/analyze`
+
+#### Request Headers
+`Content-Type: application/json`
+
+#### Request Payload
 ```json
 {
   "url": "https://openai.com"
 }
 ```
 
-#### Successful Response (`200 OK`)
+#### Response Payload (`200 OK`)
 ```json
 {
+  "url": "https://openai.com/",
   "status": 200,
   "statusText": "OK",
+  "contentType": "text/html; charset=utf-8",
   "responseTime": 184,
   "title": "OpenAI",
   "titleLength": 6,
@@ -185,20 +211,13 @@ pagepulse/
   "h1List": ["OpenAI"],
   "missingAltImages": 2,
   "totalImages": 15,
+  "missingAltDetails": [
+    { "src": "https://openai.com/image1.jpg", "altText": "Missing alt attribute" }
+  ],
   "wordCount": 1438,
   "readingTimeMinutes": 7,
   "contentDepth": "Comprehensive",
   "timestamp": "2026-07-24T17:50:00.000Z"
-}
-```
-
-#### Non-HTML Error Response (`400 Bad Request`)
-```json
-{
-  "success": false,
-  "error": "Unsupported Content Type",
-  "code": "NON_HTML",
-  "message": "The provided URL is not an HTML webpage."
 }
 ```
 
@@ -211,78 +230,116 @@ curl -X POST https://pagepulse-api.render.com/api/analyze \
 
 ---
 
-## ⚡ Getting Started
+## 📁 Project Structure
 
-### 1. Server Setup
-```bash
-cd server
-npm install
-npm run dev
 ```
-*Backend API boots at `http://localhost:5000`*
-
-### 2. Client Setup
-```bash
-cd client
-npm install
-npm run dev
+PagePlus/
+├── client/                     # React Frontend Application
+│   ├── src/
+│   │   ├── components/         # React UI Components
+│   │   │   ├── Navbar.tsx      # Header with SearchCheck logo & navigation
+│   │   │   ├── Hero.tsx        # Hero section & URL input form
+│   │   │   ├── LoadingOverlay.tsx # Animated step progress indicator
+│   │   │   ├── HealthScore.tsx # 0-100 Health Index & Top Issues panel
+│   │   │   ├── SmartRecommendations.tsx # Optimization hints engine
+│   │   │   ├── Dashboard.tsx   # 2-Column metric dashboard & Limited Analysis banner
+│   │   │   ├── MetricCard.tsx  # Metric card component
+│   │   │   ├── ErrorView.tsx   # Non-HTML & system error card viewer
+│   │   │   ├── FeaturesSection.tsx # SaaS feature grid
+│   │   │   ├── ApiSection.tsx  # cURL & JSON REST API documentation tabs
+│   │   │   ├── DocsSection.tsx # Architecture & execution lifecycle docs
+│   │   │   └── Footer.tsx      # Footer section
+│   │   ├── types/              # TypeScript interfaces
+│   │   ├── App.tsx             # Main orchestrator component
+│   │   └── main.tsx            # Entry point
+│   ├── public/                 # favicon.svg (SearchCheck logo)
+│   ├── index.html
+│   ├── tailwind.config.js
+│   └── vite.config.ts
+│
+├── docs/                       # Screenshots & Media Assets
+│   └── images/                 # home.png, audit-dashboard.png, loading-engine.png, etc.
+│
+└── server/                     # Express REST API Server
+    ├── src/
+    │   ├── controllers/        # analyzeController.ts
+    │   ├── middleware/         # errorHandler.ts
+    │   ├── parsers/            # htmlParser.ts (Cheerio logic)
+    │   ├── routes/             # apiRoutes.ts
+    │   ├── services/           # auditService.ts (3-tier decision pipeline)
+    │   ├── utils/              # urlValidator.ts
+    │   ├── tests/              # analyze.test.ts (Vitest suite)
+    │   └── server.ts           # Server bootstrap
+    ├── package.json
+    └── tsconfig.json
 ```
-*Frontend app launches at `http://localhost:5173`*
 
 ---
 
-## 🧪 Testing Instructions
+## 🧪 Testing
 
-Run the backend unit and integration test suite:
+The backend includes a comprehensive unit and integration test suite built with **Vitest** and **Supertest**.
 
+Run tests locally:
 ```bash
 cd server
 npm test
 ```
 
+Test Results Output:
 ```
  RUN  v1.6.1 C:/Users/HP/Documents/webd/page plus/server
 
- ✓ src/tests/analyze.test.ts (12 tests) 106ms
+ ✓ src/tests/analyze.test.ts (12 tests) 99ms
 
  Test Files  1 passed (1)
       Tests  12 passed (12)
-   Duration  1.56s
+   Duration  1.61s
 ```
 
 ---
 
-## 🚀 Deployment Guide
+## 🚀 Deployment
 
-- **Frontend (Vercel)**: Import `client/` directory into Vercel, set build command to `npm run build` and output directory to `dist`.
-- **Backend (Render)**: Deploy `server/` directory as a Node Web Service on Render with start command `npm start`.
+- **Frontend Deployment (Vercel)**:
+  1. Connect GitHub repository `https://github.com/manya041/PagePlus`.
+  2. Set Root Directory to `client`.
+  3. Build Command: `npm run build`
+  4. Output Directory: `dist`
+  5. Live URL: `https://pagepulse-seo.vercel.app`
+
+- **Backend Deployment (Render)**:
+  1. Create Web Service pointing to `server` root.
+  2. Build Command: `npm install && npm run build`
+  3. Start Command: `npm start`
+  4. Production API URL: `https://pagepulse-api.render.com`
 
 ---
 
-## 🌐 Real-world Notes
+## 🌐 Known Limitations & Anti-Bot Protections
 
 > [!NOTE]
-> **Anti-Bot Scraping Protections**: Enterprise platforms (such as Amazon, LinkedIn, Cloudflare-protected endpoints, or specialized login portals) implement strict anti-bot measures, JavaScript challenges, or CAPTCHA proxies. When auditing these specific domains, origin servers may block automated HTTP requests or return fallback error pages. When this occurs, metadata may be restricted even though the PagePulse parser is functioning normally. This is expected real-world web behavior.
+> **Anti-Bot Scraping Protections**: Enterprise websites (such as Amazon, LinkedIn, Cloudflare-protected endpoints, or login portals) employ anti-bot measures, JavaScript challenges, or CAPTCHA proxies. When auditing these specific domains, origin servers may return `403 Forbidden` or `503 Service Unavailable` HTML error pages. PagePulse detects these responses cleanly, extracts available metadata from the returned error page, and displays a **Limited Analysis** banner. This represents real-world web behavior.
 
 ---
 
-## 🗺️ Roadmap & Future Improvements
+## 🗺️ Roadmap & Future Enhancements
 
-- [x] Real-time latency measurement
-- [x] 0–100 Overall Health Score calculation
+- [x] Real-time HTTP response time measurement
+- [x] 0–100 Website Health Index scoring algorithm
 - [x] Top Issues Detected summary panel
-- [x] Smart Actionable Recommendations
-- [x] SEO metadata & heading extraction
-- [x] Non-HTML header validation
-- [x] Interactive JSON report exports
-- [ ] Historical audit trends database integration
-- [ ] Lighthouse Core Web Vitals scoring integration
+- [x] Smart Actionable Recommendations engine
+- [x] Strict 3-tier Content-Type header validation
+- [x] Interactive cURL & JSON REST API documentation
+- [x] JSON report export download
+- [ ] Historical audit trends database storage
+- [ ] Lighthouse Core Web Vitals integration
 
 ---
 
 ## 📄 License & Attribution
 
-Built for **[Digital Heroes Training Task](https://digitalheroesco.com)**.
+Built for the **[Digital Heroes Training Task](https://digitalheroesco.com)** qualification task.
 
 Repository: **[https://github.com/manya041/PagePlus](https://github.com/manya041/PagePlus)**
 
