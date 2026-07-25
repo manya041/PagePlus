@@ -45,10 +45,15 @@ export const App: React.FC = () => {
       const fetchTimer = new Promise((resolve) => setTimeout(resolve, 800));
 
       // Execute API request
-      const apiCall = axios.post<AuditResult>('/api/analyze', { url }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
+      const apiCall = axios.post<AuditResult>(
+        'https://pagepulse-api-ww1u.onrender.com/api/analyze',
+        { url },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       await fetchTimer;
       setStep('parsing');
 
