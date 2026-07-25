@@ -6,6 +6,43 @@ import { AuditResult, ApiErrorResponse } from '../types';
 export class AuditService {
   public static async analyzeUrl(targetUrl: string): Promise<AuditResult> {
     const startTime = performance.now();
+    // Reject obvious non-HTML resources before making a request
+const parsedUrl = new URL(targetUrl);
+const pathname = parsedUrl.pathname.toLowerCase();
+
+const blockedExtensions = [
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.svg',
+  '.webp',
+  '.ico',
+  '.pdf',
+  '.json',
+  '.xml',
+  '.zip',
+  '.rar',
+  '.7z',
+  '.mp3',
+  '.mp4',
+  '.avi',
+  '.mov'
+];
+
+if (
+  blockedExtensions.some(ext => pathname.endsWith(ext)) ||
+  pathname.startsWith('/api') ||
+  parsedUrl.hostname.startsWith('api.')
+) {
+  throw {
+    success: false,
+    error: 'Unsupported Content Type',
+    code: 'NON_HTML',
+    message: 'The provided URL is not an HTML webpage.',
+    status: 400
+  };
+}
 
     try {
       const response = await axios.get(targetUrl, {
@@ -80,6 +117,23 @@ export class AuditService {
       }
 
       const axiosErr = error as AxiosError;
+      const errorContentType = String(
+  axiosErr.response?.headers?.['content-type'] || ''
+).toLowerCase();
+
+if (
+  errorContentType &&
+  !errorContentType.includes('text/html') &&
+  !errorContentType.includes('application/xhtml+xml')
+) {
+  throw {
+    success: false,
+    error: 'Unsupported Content Type',
+    code: 'NON_HTML',
+    message: 'The provided URL is not an HTML webpage.',
+    status: 400
+  };
+}
       if (axiosErr.code === 'ECONNABORTED' || axiosErr.message?.includes('timeout')) {
         const timeoutErr: ApiErrorResponse = {
           error: 'Connection Timeout',
@@ -100,6 +154,15 @@ export class AuditService {
         throw notFoundErr;
       }
 
+      if (axiosErr.response?.status === 405) {
+      throw {
+        success: false,
+        error: 'Unsupported Content Type',
+        code: 'NON_HTML',
+        message: 'The provided URL is not an HTML webpage.',
+        status: 400
+      };
+    }
       if (axiosErr.response?.status === 404) {
         const err404: ApiErrorResponse = {
           error: 'Not Found',
